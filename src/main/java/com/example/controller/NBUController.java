@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class NBU_Controller {
+public class NBUController {
 
 }
