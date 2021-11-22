@@ -14,6 +14,6 @@ class NBUClientTest {
 
     @Test
     public void test() {
-       // assertThat(client.getCurrencies().size()).isGreaterThan(30);
+        assertThat(client.getCurrencies().size()).isGreaterThan(30);
     }
 }

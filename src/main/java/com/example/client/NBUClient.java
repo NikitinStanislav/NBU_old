@@ -11,13 +11,7 @@ public class NBUClient {
 
     @Autowired Configuration configuration = new Configuration();
 
-    public void printRecords(){
-        //List<CurrencyRecord> list= configuration.getData();
-        //for(CurrencyRecord cur: list)
-        //System.out.println(cur.toString());
-    }
-
-    public CurrencyRecord[] getCurrencies() {
+    public List<CurrencyRecord> getCurrencies() {
         return null;
     }
 }
