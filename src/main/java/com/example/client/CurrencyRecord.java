@@ -1,22 +1,18 @@
 package com.example.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrencyRecord {
+
+    @JsonProperty("cc")
     private String abbreviation;
-    private int rate;
+    private double rate;
+    @JsonProperty("r030")
     private int code;
+    @JsonProperty("txt")
     private String name;
-    private String txt;
-
-    public String getTxt() {
-        return txt;
-    }
-
-    public void setTxt(String txt) {
-        this.txt = txt;
-    }
 
     @Override
     public String toString() {
@@ -25,7 +21,6 @@ public class CurrencyRecord {
                 ", rate=" + rate +
                 ", code=" + code +
                 ", name='" + name + '\'' +
-                ", txt='" + txt + '\'' +
                 '}';
     }
 
@@ -37,11 +32,11 @@ public class CurrencyRecord {
         this.abbreviation = abbreviation;
     }
 
-    public int getRate() {
+    public double getRate() {
         return rate;
     }
 
-    public void setRate(int rate) {
+    public void setRate(double rate) {
         this.rate = rate;
     }
 
