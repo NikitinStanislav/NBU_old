@@ -1,12 +1,12 @@
 package com.example.controller;
 
+import com.example.domain.Currency;
+import com.example.repository.CurrencyRepository;
 import com.example.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,14 +16,28 @@ public class CurrencyController {
     @Autowired
     private CurrencyService currencyService;
 
+    @Autowired
+    private CurrencyRepository currencyRepository;
+
     @GetMapping
     public List<String> list(){
-        return currencyService.getList();
+        Iterable<Currency> list = currencyRepository.findAll();
+        List<String> strings = new ArrayList<>();
+        for(Currency cur : list){
+            strings.add(cur.toString());
+        }
+        return strings;
     }
 
     @GetMapping("/{code}")
     public String getOne(@PathVariable("code") int code){
-        return currencyService.getOne(code);
+        return currencyRepository.findByCode(code).toString();
+    }
+
+    @PostMapping
+    public void save(){
+        List<Currency> currencies = currencyService.getCurrencyList();
+        currencyRepository.saveAll(currencies);
     }
 
 
