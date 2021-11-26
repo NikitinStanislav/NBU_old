@@ -1,3 +1,5 @@
 GET http://localhost:8080/currencies
 ###
-GET http://localhost:8080/currencies/860
+GET http://localhost:8080/currencies/981
+###
+POST http://localhost:8080/currencies

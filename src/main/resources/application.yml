@@ -1,11 +1,17 @@
 spring:
   datasource:
     username: postgres
-    password: password
-    url: jdbc:postgresql://localhost:5432/my_first_db
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/currencies
     driver-class-name: org.postgresql.Driver
   jpa:
-    generate-ddl: true
+    #gengenerate-ddl: true
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        ddl-auto: none
+        temp:
+          use-jdbc_metadata_defaults: false
 logging:
   level:
     root: INFO
