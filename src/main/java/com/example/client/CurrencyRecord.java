@@ -13,6 +13,8 @@ public class CurrencyRecord {
     private int code;
     @JsonProperty("txt")
     private String name;
+    @JsonProperty("exchangedate")
+    private String date;
 
     @Override
     public String toString() {
@@ -21,6 +23,7 @@ public class CurrencyRecord {
                 ", rate=" + rate +
                 ", code=" + code +
                 ", name='" + name + '\'' +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -54,5 +57,13 @@ public class CurrencyRecord {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

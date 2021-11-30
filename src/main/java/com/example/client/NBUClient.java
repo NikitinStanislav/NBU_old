@@ -1,8 +1,6 @@
 package com.example.client;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,8 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -21,21 +20,21 @@ public class NBUClient {
     @Autowired private RestTemplate restTemplate;
 
     @Value("${com.example.client.url}")
-    private String URL;
+    private String url;
 
-    public List<CurrencyRecord> getCurrencies() {
-        log.info("getting list of CurrencyRecords");
-        ResponseEntity<List<CurrencyRecord>> response;
-        List<CurrencyRecord> list = new ArrayList<>();
-        try {
-            response = restTemplate.exchange(URL, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<CurrencyRecord>>() {
-                    });
-            list = response.getBody();
+    public List<CurrencyRecord> getCurrencies(String date){
+        return getAllRecords(UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("date", date)
+                .queryParam("json").toUriString());
+    }
 
-        } catch (Exception ex){
-            log.error("CurrencyRecords not received", ex);
-        }
-        return list;
+    private List<CurrencyRecord> getAllRecords(String url){
+        ResponseEntity<List<CurrencyRecord>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<CurrencyRecord>>() {
+                });
+        return response.getBody();
     }
 }

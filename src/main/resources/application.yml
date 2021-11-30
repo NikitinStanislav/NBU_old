@@ -17,4 +17,7 @@ logging:
     root: INFO
     com.example.client.NBUClient: ${NBU_CLIENT_LOG_LEVEL:DEBUG}
 
-com.example.client.url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json
+com.example.client.url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange
+#%{date}
+
+
