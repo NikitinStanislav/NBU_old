@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: itsme
+      changes:
+        - createTable:
+            tableName: currencies
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: abbreviation
+                  type: varchar
+              - column:
+                  name: rate
+                  type: double precision
+              - column:
+                  name: code
+                  type: int
+              - column:
+                  name: name
+                  type: varchar
+              - column:
+                  name: date
+                  type: timestamp
+
+
