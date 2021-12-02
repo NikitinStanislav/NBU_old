@@ -1,4 +1,4 @@
-package com.example.client;
+package com.example.client.currency;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,33 +8,29 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
 @Component
 @Slf4j
-public class NBUClient {
+public class CurrencyClient {
 
     @Autowired private RestTemplate restTemplate;
 
     @Value("${com.example.client.url}")
     private String url;
 
-    public List<CurrencyRecord> getCurrencies(String date){
-        return getAllRecords(UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("date", date)
-                .queryParam("json").toUriString());
-    }
+    public CurrencyRecord getCurrencyRecord(String abbreviation){
 
-    private List<CurrencyRecord> getAllRecords(String url){
-        ResponseEntity<List<CurrencyRecord>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
+        String fullUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("valcode", abbreviation)
+                .queryParam("json").toUriString();
+
+        ResponseEntity<List<CurrencyRecord>> response = restTemplate.exchange(fullUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<CurrencyRecord>>() {
                 });
-        return response.getBody();
+
+        return response.getBody().stream().findAny().orElse(new CurrencyRecord());
     }
 }

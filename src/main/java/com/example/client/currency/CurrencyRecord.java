@@ -1,4 +1,4 @@
-package com.example.client;
+package com.example.client.currency;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,22 +8,17 @@ public class CurrencyRecord {
 
     @JsonProperty("cc")
     private String abbreviation;
-    private double rate;
     @JsonProperty("r030")
     private int code;
     @JsonProperty("txt")
     private String name;
-    @JsonProperty("exchangedate")
-    private String date;
 
     @Override
     public String toString() {
         return "CurrencyRecord{" +
                 "abbreviation='" + abbreviation + '\'' +
-                ", rate=" + rate +
                 ", code=" + code +
                 ", name='" + name + '\'' +
-                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -35,13 +30,6 @@ public class CurrencyRecord {
         this.abbreviation = abbreviation;
     }
 
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
 
     public int getCode() {
         return code;
@@ -59,11 +47,4 @@ public class CurrencyRecord {
         this.name = name;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 }
