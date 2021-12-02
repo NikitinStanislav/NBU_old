@@ -1,5 +1,11 @@
-GET http://localhost:8080/currencies
+GET http://localhost:8080/currency
 ###
-GET http://localhost:8080/currencies/36
+GET http://localhost:8080/currency/XAG
 ###
-POST http://localhost:8080/currencies?date=2019-04-11
+POST http://localhost:8080/currency?valcode=XAG
+###
+GET http://localhost:8080/currency-rate
+###
+GET http://localhost:8080/currency-rate/XAG
+###
+POST http://localhost:8080/currency-rate?valcode=XAU&date=2009-09-21
