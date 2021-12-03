@@ -1,15 +1,14 @@
 package com.example.service.currencyRate;
 
-
-import com.example.client.currency.CurrencyClient;
-import com.example.client.currency.CurrencyRecord;
 import com.example.client.currencyRate.CurrencyRateClient;
 import com.example.client.currencyRate.CurrencyRateRecord;
 import com.example.domain.Currency;
 import com.example.domain.CurrencyRate;
 import com.example.repository.CurrencyRateRepository;
 import com.example.repository.CurrencyRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,39 +19,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CurrencyRateService {
 
+    /** Provides access to bank data*/
     @Autowired
     private CurrencyRateClient client;
 
+    /** Additional List<CurrencyRate> findByCurrency(Currency currency) method provided*/
     @Autowired
     private CurrencyRateRepository currencyRateRepository;
 
+    /** Additional Currency findByAbbreviation(String abbreviation) method provided*/
     @Autowired
     private CurrencyRepository  currencyRepository;
 
-    public List<String> findExactCurrency(String abbreviation){
-        Currency currency = currencyRepository.findByAbbreviation(abbreviation);
-        List<CurrencyRate> list = currencyRateRepository.findByCurrency(currency);
-        List<String> strings = new ArrayList<>();
-        for (CurrencyRate cur: list)
-            strings.add(cur.toString());
+    /**Returns specified currency rate on specified date. Specified currency MUST be from "currency" table
+     * If date is not specified method will return currency rate for present day*/
+    public CurrencyRate getCurrencyRate(String abbreviation){
 
-        return strings;
-    }
-    public String findExactCurrencyByDate(String abbreviation, LocalDate date){
-
-        LocalDate localDate = date==null ? LocalDate.now() : date;
-        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
-
-        Currency currency = currencyRepository.findByAbbreviation(abbreviation);
-        List<CurrencyRate> list = currencyRateRepository.findByCurrency(currency);
-
-        return list.stream().filter(x->x.getDate().equals(instant)).collect(Collectors.toList()).stream().findFirst().toString();
+        return currencyRateRepository.findByCurrency(currencyRepository.findByAbbreviation(abbreviation));
     }
 
-    public List<String> getList(){
+    /**Returns list of all records saved in "currency_rate" table*/
+    public List<String> getAllRecords(){
         Iterable<CurrencyRate> list = currencyRateRepository.findAll();
         List<String> strings = new ArrayList<>();
         for(CurrencyRate cur : list){
@@ -61,17 +52,25 @@ public class CurrencyRateService {
         return strings;
     }
 
+    /**Saves specified currency rate on specified date. Specified currency MUST be from "currency" table
+     * If date is not specified method will return currency rate for present day*/
     public void saveCurrencyRate(String abbreviation, LocalDate date){
 
         LocalDate localDate = date==null ? LocalDate.now() : date;
         String dateString = localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         CurrencyRateRecord curRateRec = client.getCurrencyRateRecord(abbreviation, dateString);
+        try {
+            currencyRateRepository.delete(getCurrencyRate(abbreviation));
+        } catch (Exception exception){
+            log.info("New rate specified");
+        }
         Currency currency = currencyRepository.findByAbbreviation(abbreviation);
-
         if(currency!=null)
-        currencyRateRepository.save(new CurrencyRate(curRateRec.getRate()
-                , localDate.atStartOfDay().toInstant(ZoneOffset.UTC)
-                , currency));
+
+                currencyRateRepository.save(new CurrencyRate(curRateRec.getRate()
+                        , localDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+                        , currency));
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.controller.currency;
 
+import com.example.dto.CurrencyDTO;
 import com.example.service.currency.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,18 +16,30 @@ public class CurrencyController {
     @Autowired
     private CurrencyService currencyService;
 
-    @GetMapping
-    public List<String> list(){
-        return currencyService.getList();
+
+    /**Returns list of all types of currency saved in "currency" table if valcode is not specified*/
+    /**Returns specified type of currency from "currency" table*/
+    @GetMapping()
+    public List<String> getByValcode(@RequestParam(value = "valcode", required = false)
+                                              String abbreviation){
+        return currencyService.findExactCurrencyByValcode(abbreviation);
     }
 
-    @GetMapping("/{abbreviation}")
-    public String getOne(@PathVariable("abbreviation") String abbreviation){
-        return currencyService.findExactCurrency(abbreviation);
+    /**Returns specified type of currency from "currency" table*/
+    @GetMapping("/{id}")
+    public String getOneById(@PathVariable("id") long id){
+        return currencyService.findExactCurrencyById(id);
     }
 
     @PostMapping
-    public void save(@RequestParam("valcode") String abbreviation){
-        currencyService.saveCurrency(abbreviation);
+    @ResponseBody
+    public void save(@RequestBody List<CurrencyDTO> currencyDTO) {
+        currencyService.saveCurrency(currencyDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public void delete (@PathVariable("id") long id){
+        currencyService.deleteCurrency(id);
+    }
+
 }

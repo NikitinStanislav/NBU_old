@@ -1,10 +1,10 @@
 package com.example.domain;
 
-
 import lombok.Data;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data //shortcut of @ToString, @EqualsAndHashCode, @Getter, @Setter and @RequiredArgsConstructor together
@@ -13,6 +13,9 @@ public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @OneToMany(mappedBy = "currency")
+    private List<CurrencyRate> currencyRate;
 
     public Currency() {
     }

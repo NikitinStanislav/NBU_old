@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
               - column:
                   name: abbreviation
-                  type: varchar
+                  type: varchar(3)
               - column:
                   name: code
                   type: int
@@ -48,7 +48,7 @@ databaseChangeLog:
                   name: date
                   type: timestamp
         - addUniqueConstraint:
-            columnNames: currency_id, date
+            columnNames: currency_id
             tableName: currency_rate
         manyToOne:
                   type:

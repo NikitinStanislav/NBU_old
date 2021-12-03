@@ -1,6 +1,5 @@
 package com.example.domain;
 
-
 import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NonNull;
@@ -11,6 +10,7 @@ import java.time.Instant;
 @Data
 @Entity
 public class CurrencyRate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -20,6 +20,13 @@ public class CurrencyRate {
     @NotNull
     private Instant date;
 
+    @Override
+    public String toString() {
+        return "CurrencyRate{" +
+                "rate=" + rate +
+                ", date=" + date +
+                '}';
+    }
 
     @ManyToOne
     @JoinColumn(name = "currency_id")
@@ -31,8 +38,6 @@ public class CurrencyRate {
         this.currency = currency;
     }
 
-    public CurrencyRate() {
-
-    }
+    public CurrencyRate() {}
 }
 

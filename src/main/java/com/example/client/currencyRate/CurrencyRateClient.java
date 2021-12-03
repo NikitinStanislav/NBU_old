@@ -17,13 +17,16 @@ import java.util.List;
 @Slf4j
 public class CurrencyRateClient {
 
+    /** RestTemplate bean is created in Configuration by means of RestTemplateBuilder */
     @Autowired
     private RestTemplate restTemplate;
+
 
     @Value("${com.example.client.url}")
     private String url;
 
 
+    /**Returns empty CurrencyRateRecord if not correct abbreviation provided*/
     public CurrencyRateRecord getCurrencyRateRecord(String abbreviation, String date){
 
         String fullUrl = UriComponentsBuilder.fromHttpUrl(url)
@@ -31,9 +34,12 @@ public class CurrencyRateClient {
                 .queryParam("date", date)
                 .queryParam("json").toUriString();
 
+        log.info("ResponseEntity creating");
         ResponseEntity<List<CurrencyRateRecord>> response = restTemplate.exchange(fullUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<CurrencyRateRecord>>() {
                 });
+
+        if(response.getBody().size()==0) log.error("ResponseEntity is empty. Check correct currency name in query. Empty record created");
 
         return response.getBody().stream().findAny().orElse(new CurrencyRateRecord());
     }

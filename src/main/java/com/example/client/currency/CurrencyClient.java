@@ -16,20 +16,24 @@ import java.util.List;
 @Slf4j
 public class CurrencyClient {
 
+    /** RestTemplate bean is created in Configuration by means of RestTemplateBuilder */
     @Autowired private RestTemplate restTemplate;
 
     @Value("${com.example.client.url}")
     private String url;
 
+    /**Returns empty CurrencyRateRecord if not correct abbreviation provided*/
     public CurrencyRecord getCurrencyRecord(String abbreviation){
 
         String fullUrl = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("valcode", abbreviation)
                 .queryParam("json").toUriString();
-
+        log.info("ResponseEntity creating");
         ResponseEntity<List<CurrencyRecord>> response = restTemplate.exchange(fullUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<CurrencyRecord>>() {
                 });
+
+        if(response.getBody().size()==0) log.error("ResponseEntity is empty. Check correct currency name in query. Empty record created");
 
         return response.getBody().stream().findAny().orElse(new CurrencyRecord());
     }

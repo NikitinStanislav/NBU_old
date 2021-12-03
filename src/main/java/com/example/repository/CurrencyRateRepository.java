@@ -10,5 +10,7 @@ import java.util.List;
 @Table(name ="currencyRate")
 public interface CurrencyRateRepository extends CrudRepository<CurrencyRate, Long> {
 
-        List<CurrencyRate> findByCurrency(Currency currency);
+        CurrencyRate findByCurrency(Currency currency);
+
+        void deleteByCurrency(Currency currency);
 }

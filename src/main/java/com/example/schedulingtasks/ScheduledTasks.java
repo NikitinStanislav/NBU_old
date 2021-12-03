@@ -1,6 +1,8 @@
 package com.example.schedulingtasks;
 
-import com.example.domain.CurrencyRate;
+import com.example.domain.Currency;
+import com.example.repository.CurrencyRepository;
+import com.example.service.currency.CurrencyService;
 import com.example.service.currencyRate.CurrencyRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
-@Component
 @Slf4j
+@Component
 public class ScheduledTasks {
 
     private static int counter = 1;
@@ -19,22 +22,36 @@ public class ScheduledTasks {
     @Autowired
     CurrencyRateService rateService;
 
-    @Scheduled(fixedRate = 3000)
-    public void someAction(){
+    @Autowired
+    private CurrencyRepository currencyRepository;
 
-        if(counter<31) {
+    @Autowired
+    CurrencyService currencyService;
 
-            LocalDate localDate = LocalDate.of(2008, Month.AUGUST, counter);
+    @Scheduled(cron = "0/3 * * * * *")
+    public void someDemoAction(){
+        Month month = Month.DECEMBER;
+        if(counter==month.length(false)) counter=1;
+        Iterable<Currency> list = currencyRepository.findAll();
 
-            rateService.saveCurrencyRate("XAU", localDate);
-            rateService.saveCurrencyRate("XAG", localDate);
+        LocalDate localDate = LocalDate.of(2012, month, counter);
 
-            System.out.println(rateService.findExactCurrencyByDate("XAU", localDate));
-            System.out.println(rateService.findExactCurrencyByDate("XAG", localDate));
+        for(Currency cur: list){
+            rateService.saveCurrencyRate(cur.getAbbreviation(), localDate);
+        }
 
             counter++;
+    }
 
-            log.info("Scheduled update!");
+
+
+    /** Test assignment */
+    @Scheduled(cron = "0 0 0 * * *")
+    public void getRates(){
+        Iterable<Currency> list = currencyRepository.findAll();
+        for(Currency cur: list){
+            rateService.saveCurrencyRate(cur.getAbbreviation(), null);
         }
+        log.info("Daily saving EUR, USD and GBP rates complete");
     }
 }

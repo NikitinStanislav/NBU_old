@@ -1,11 +1,23 @@
 GET http://localhost:8080/currency
 ###
-GET http://localhost:8080/currency/XAG
+GET http://localhost:8080/currency?valcode=EUR
 ###
-POST http://localhost:8080/currency?valcode=XAG
+GET http://localhost:8080/currency/1
+###
+POST http://localhost:8080/currency
+Content-Type: application/json
+
+[{"valcode":"USD"},
+{"valcode":"EUR"},
+{"valcode":"GBP"}]
+###
+DELETE http://localhost:8080/currency/3
+###
+
+
 ###
 GET http://localhost:8080/currency-rate
 ###
-GET http://localhost:8080/currency-rate/XAG
+GET http://localhost:8080/currency-rate/USD
 ###
-POST http://localhost:8080/currency-rate?valcode=XAU&date=2009-09-21
+POST http://localhost:8080/currency-rate?valcode=USD&date=2019-07-19
