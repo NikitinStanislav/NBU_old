@@ -1,12 +1,11 @@
 package com.example.controller.currency;
 
+import com.example.domain.Currency;
 import com.example.dto.CurrencyDTO;
 import com.example.service.currency.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,15 +19,10 @@ public class CurrencyController {
     /**Returns list of all types of currency saved in "currency" table if valcode is not specified*/
     /**Returns specified type of currency from "currency" table*/
     @GetMapping()
-    public List<String> getByValcode(@RequestParam(value = "valcode", required = false)
-                                              String abbreviation){
-        return currencyService.findExactCurrencyByValcode(abbreviation);
-    }
-
-    /**Returns specified type of currency from "currency" table*/
-    @GetMapping("/{id}")
-    public String getOneById(@PathVariable("id") long id){
-        return currencyService.findExactCurrencyById(id);
+    @ResponseBody
+    public List<Currency> getCurrencies(@RequestParam(value = "valcode", required = false) String abbreviation,
+                                       @RequestParam(value = "id", required = false) Long id){
+        return id==null? currencyService.findExactCurrencyByValcode(abbreviation) : currencyService.findExactCurrencyById(id);
     }
 
     @PostMapping

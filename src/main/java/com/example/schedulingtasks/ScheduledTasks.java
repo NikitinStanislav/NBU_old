@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -28,29 +27,26 @@ public class ScheduledTasks {
     @Autowired
     CurrencyService currencyService;
 
-    @Scheduled(cron = "0/3 * * * * *")
+    @Scheduled(cron = "0/30 * * * * *")
     public void someDemoAction(){
-        Month month = Month.DECEMBER;
+        Month month = Month.SEPTEMBER;
         if(counter==month.length(false)) counter=1;
         Iterable<Currency> list = currencyRepository.findAll();
 
-        LocalDate localDate = LocalDate.of(2012, month, counter);
+        LocalDate localDate = LocalDate.of(2013, month, counter);
 
         for(Currency cur: list){
-            rateService.saveCurrencyRate(cur.getAbbreviation(), localDate);
+            rateService.saveCurrencyRate(cur, localDate);
         }
-
             counter++;
     }
-
-
 
     /** Test assignment */
     @Scheduled(cron = "0 0 0 * * *")
     public void getRates(){
         Iterable<Currency> list = currencyRepository.findAll();
         for(Currency cur: list){
-            rateService.saveCurrencyRate(cur.getAbbreviation(), null);
+            rateService.saveCurrencyRate(cur, null);
         }
         log.info("Daily saving EUR, USD and GBP rates complete");
     }

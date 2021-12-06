@@ -48,7 +48,7 @@ databaseChangeLog:
                   name: date
                   type: timestamp
         - addUniqueConstraint:
-            columnNames: currency_id
+            columnNames: currency_id, date
             tableName: currency_rate
         manyToOne:
                   type:

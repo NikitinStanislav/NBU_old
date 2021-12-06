@@ -5,12 +5,14 @@ import com.example.client.currency.CurrencyRecord;
 import com.example.domain.Currency;
 import com.example.dto.CurrencyDTO;
 import com.example.repository.CurrencyRepository;
+import com.example.service.currencyRate.CurrencyRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -25,25 +27,22 @@ public class CurrencyService{
     @Autowired
     private CurrencyRepository currencyRepository;
 
+    @Autowired
+    private CurrencyRateService currencyRateService;
+
     /**Returns specified currency type data from "currency" table*/
-    public List<String> findExactCurrencyByValcode(String abbreviation){
+    public List<Currency> findExactCurrencyByValcode(String abbreviation) {
         if(abbreviation==null){
-            return getList();
+            return getFullListOfCurrencies();
         }
-        List<String> result = new ArrayList<>();
-        try {
-            result.add(currencyRepository.findByAbbreviation(abbreviation).toString());
-        } catch (NullPointerException npe){
-            log.warn("No such type of currency in the table");
-        }
-        return result;
+        return Arrays.asList(currencyRepository.findByAbbreviation(abbreviation));
     }
 
-    public String findExactCurrencyById(long id){
-            String result = currencyRepository.findById(id).toString();
-            if(result.equals("Optional.empty"))
-            log.warn("No such currency id in the table");
-        return result;
+    /**Returns specified currency type data from "currency" table*/
+    public List<Currency> findExactCurrencyById(long id){
+        List<Currency>list = new ArrayList<>();
+        list.add(currencyRepository.findById(id).get());   //если будет выделываться, добавить проверку isPresent();
+        return list;
     }
 
     /**Saves specified currency type in "currency" table*/
@@ -63,16 +62,17 @@ public class CurrencyService{
 
     /**Delete specified currency type from "currency" table*/
     public void deleteCurrency(Long id){
-            currencyRepository.deleteById(id);
+        currencyRateService.deleteCurrencyRates(currencyRepository.findById(id).get());
+        currencyRepository.deleteById(id);
     }
 
     /**Returns list of all currency types saved in "currency" table*/
-    private List<String> getList(){
-        Iterable<Currency> list = currencyRepository.findAll();
-        List<String> strings = new ArrayList<>();
-        for(Currency cur : list){
-            strings.add(cur.toString());
+    private List<Currency> getFullListOfCurrencies() {
+        Iterable<Currency> iters = currencyRepository.findAll();
+        List<Currency> list = new ArrayList<>();
+        for(Currency cur: iters){
+            list.add(cur);
         }
-        return strings;
+        return list;
     }
 }

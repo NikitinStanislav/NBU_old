@@ -5,7 +5,6 @@ import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Data //shortcut of @ToString, @EqualsAndHashCode, @Getter, @Setter and @RequiredArgsConstructor together
 @Entity
@@ -14,7 +13,7 @@ public class Currency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany(mappedBy = "currency")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "currency")
     private List<CurrencyRate> currencyRate;
 
     public Currency() {

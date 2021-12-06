@@ -1,8 +1,8 @@
 GET http://localhost:8080/currency
 ###
-GET http://localhost:8080/currency?valcode=EUR
+GET http://localhost:8080/currency?valcode=USD
 ###
-GET http://localhost:8080/currency/1
+GET http://localhost:8080/currency?id=2
 ###
 POST http://localhost:8080/currency
 Content-Type: application/json
@@ -11,13 +11,9 @@ Content-Type: application/json
 {"valcode":"EUR"},
 {"valcode":"GBP"}]
 ###
-DELETE http://localhost:8080/currency/3
-###
+DELETE http://localhost:8080/currency/2
+##№
 
 
-###
-GET http://localhost:8080/currency-rate
-###
-GET http://localhost:8080/currency-rate/USD
 ###
 POST http://localhost:8080/currency-rate?valcode=USD&date=2019-07-19
