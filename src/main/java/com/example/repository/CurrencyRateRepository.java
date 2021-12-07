@@ -5,11 +5,11 @@ import com.example.domain.CurrencyRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.Table;
+import java.util.List;
 
 @Table(name ="currencyRate")
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRate, Long> {
 
-        CurrencyRate findByCurrency(Currency currency);
+        List<CurrencyRate> findAllByCurrency(Currency currency);
 
-        void deleteAllByCurrency(Currency currency);
 }

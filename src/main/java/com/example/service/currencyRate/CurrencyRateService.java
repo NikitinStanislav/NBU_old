@@ -35,17 +35,6 @@ public class CurrencyRateService {
     @Autowired
     private CurrencyService currencyService;
 
-
-    /**Returns list of all records saved in "currency_rate" table*/
-    public List<String> getAllRecords(){
-        Iterable<CurrencyRate> list = currencyRateRepository.findAll();
-        List<String> strings = new ArrayList<>();
-        for(CurrencyRate cur : list){
-            strings.add(cur.toString());
-        }
-        return strings;
-    }
-
     /**Saves specified currency rate on specified date. Specified currency MUST be from "currency" table
      * If date is not specified method will return currency rate for present day*/
     public void saveCurrencyRate(Currency currency, LocalDate date) {
@@ -56,19 +45,23 @@ public class CurrencyRateService {
         String dateString = localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         CurrencyRateRecord curRateRec = client.getCurrencyRateRecord(currency.getAbbreviation(), dateString);
-
+            try{
         currencyRateRepository.save(new CurrencyRate(curRateRec.getRate()
                 , localDate.atStartOfDay().toInstant(ZoneOffset.UTC)
                 , currency));
-    }
+            } catch (DataIntegrityViolationException exception) {
+            log.info("Trying to add a duplicating values: currency " + currency.getAbbreviation()+", date "+date);
+            }
+        }
 
     public void saveCurrencyRateFromAbbreviation(String abbreviation, LocalDate date){
-        List<Currency>list = currencyService.findExactCurrencyByValcode(abbreviation);
-        saveCurrencyRate(list.stream().findFirst().orElse(null) ,date);
+        Currency currency = currencyService.getCurrencyFromAbbreviation(abbreviation);
+        saveCurrencyRate(currency ,date);
     }
 
 
     public void deleteCurrencyRates(Currency currency){
-        currencyRateRepository.deleteAllByCurrency(currency);
+        List <CurrencyRate> cur = currencyRateRepository.findAllByCurrency(currency);
+        currencyRateRepository.deleteAll(cur);
     }
 }
